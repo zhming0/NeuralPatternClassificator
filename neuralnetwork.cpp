@@ -83,6 +83,7 @@ void NeuralNetwork::learn(const QVector<QVector<double> >& inputSet, const QVect
     this->genarateRandomNetwork();
     int ioSize = inputSet.size(), curK = 0;
     double curE = 0x7fffffff;
+    Gradient deltaGradient(this);
     while (curK < maxK && curE > eps)
     {
         Gradient totalGradient(this);
@@ -104,6 +105,32 @@ void NeuralNetwork::learn(const QVector<QVector<double> >& inputSet, const QVect
                 }
             }
         }
+
+        // update weights and thresholds
+        for(int il=layers.count()-1;il>0;il--)
+        {
+            NeuralLayer* layer=layers.at(il);
+            for(int in=0,cn=layer->numberOfNuerons();in<cn;in++)
+            {
+                Neuron* neuron=layer->getNeuron(in);
+                double delta=-lambda*totalGradient.getThreshold(il,in)+micro*deltaGradient.getThreshold(il,in);
+                neuron->setThreshold(neuron->getThreshold()+delta);
+                deltaGradient.setThreshold(il,in,delta);
+            }
+
+            for(int in=0,cn=layer->numberOfNuerons();in<cn;in++)
+            {
+                Neuron* neuron=layer->getNeuron(in);
+                for(int ii=0,ci=neuron->numberOfDendrons();ii<ci;ii++)
+                {
+                    double delta= -lambda*totalGradient.getWeight(il,in,ii)+micro*deltaGradient.getWeight(il,in,ii);
+                    neuron->setDendronWeight(ii,neuron->getDendronWeight(ii)+delta);
+                    deltaGradient.setWeight(il,in,ii,delta);
+                }
+            }
+        }
+
+
         curE = totalGradient.getGradientAbs();
         curK++;
     }
