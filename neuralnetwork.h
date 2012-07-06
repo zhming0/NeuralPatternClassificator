@@ -23,7 +23,7 @@ protected:
     double random();
     double gainFunction(double value) const;
 private:
-    friend class NetworkXmlHandler;
+    friend class NeuralNetworkXmlHandler;
     QVector<NeuralLayer*> layers;
 };
 
