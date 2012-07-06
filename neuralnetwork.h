@@ -14,7 +14,7 @@ public:
     int numberOfLayers() const;
     NeuralLayer* getLayer(int index) const;
 protected:
-    void saveToXML();
+    void saveToXML(const QString& path);
     void readFromXML(const QString& path);
     void genarateRandomNetwork();
     QVector<double> activate(const QVector<double>& input);
@@ -22,6 +22,7 @@ protected:
     Gradient computePartialGradient(const QVector<double>& requiredOutput);
     double random();
 private:
+    friend class NetworkXmlHandler;
     QVector<NeuralLayer*> layers;
 };
 

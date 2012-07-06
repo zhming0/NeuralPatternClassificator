@@ -10,6 +10,7 @@ public:
     int numberOfNuerons() const;
     Neuron* getNeuron(int index);
 private:
+    friend class NetworkXmlHandler;
     QVector<Neuron*> neurons;
     NeuralNetwork* network;
 };

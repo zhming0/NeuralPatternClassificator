@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core
+QT       += core xml
 
 QT       -= gui
 
@@ -19,26 +19,12 @@ SOURCES += main.cpp \
     neuralnetwork.cpp \
     neuron.cpp \
     gradient.cpp \
-    neurallayer.cpp
+    neurallayer.cpp \
+    networkxmlhandler.cpp
 
 HEADERS += \
     neuralnetwork.h \
     neuron.h \
     gradient.h \
-    neurallayer.h
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    neurallayer.h \
+    networkxmlhandler.h
