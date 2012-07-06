@@ -22,6 +22,7 @@ protected:
     Gradient computePartialGradient(const QVector<double>& input, const QVector<double>& requiredOutput);
     double random();
 private:
+    friend class NetworkXmlHandler;
     QVector<NeuralLayer*> layers;
 };
 
