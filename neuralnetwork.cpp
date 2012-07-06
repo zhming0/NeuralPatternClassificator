@@ -3,6 +3,7 @@
 #include <QFile>
 #include<iostream>
 #include"gradient.h"
+#include<qmath.h>
 NeuralNetwork::NeuralNetwork(const QVector<int>& sizeOfNetwork)
 {
     for (int i = 0; i < sizeOfNetwork.size(); i++)
@@ -99,7 +100,35 @@ void NeuralNetwork::learn(const QVector<QVector<double> >& inputSet, const QVect
 
 QVector<double> NeuralNetwork::activate(const QVector<double>& input)
 {
+    for (int i = 0; i < this->numberOfLayers(); i++)
+    {
+        NeuralLayer* currentLayer = this->getLayer(i);
+        for(int j = 0; j < currentLayer->numberOfNuerons(); j++)
+        {
+            Neuron* currentNeuron = currentLayer->getNeuron(j);
+            double sum = currentNeuron->getThreshold();
+            for (int k = 0; k < currentNeuron->numberOfDendrons(); k++)
+            {
+                if (i == 0) {
+                    sum += currentNeuron->getDendronWeight(k) * input[j];
+                } else {
+                    sum += currentNeuron->getDendronWeight(k) * this->getLayer(i-1)->getNeuron(k)->getOutput();
+                }
+            }
 
+            currentNeuron->setOutput(sum);
+        }
+    }
+
+    QVector<double> result;
+    for (int i = 0; i < this->getLayer(this->numberOfLayers() - 1)->numberOfNuerons(); i++)
+        result.push_back(this->getLayer(this->numberOfLayers() - 1)->getNeuron(i)->getOutput());
+    return result;
+}
+
+double NeuralNetwork::gainFunction(double value) const
+{
+    return 1/(1+qExp(-value));
 }
 
 Gradient NeuralNetwork::computePartialGradient(const QVector<double>& requiredOutput)
