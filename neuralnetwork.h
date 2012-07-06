@@ -14,7 +14,7 @@ public:
     int numberOfLayers() const;
     NeuralLayer* getLayer(int index) const;
 protected:
-    void saveToXML();
+    void saveToXML(const QString& path);
     void readFromXML(const QString& path);
     void genarateRandomNetwork();
     QVector<double> activate(QVector<double> input);

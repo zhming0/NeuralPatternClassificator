@@ -1,5 +1,6 @@
 #include "neuralnetwork.h"
 #include <ctime>
+#include <QFile>
 #include<iostream>
 NeuralNetwork::NeuralNetwork(const QVector<int>& sizeOfNetwork)
 {
@@ -17,6 +18,34 @@ NeuralNetwork::NeuralNetwork(const QString& path)
 void NeuralNetwork::readFromXML(const QString& path)
 {
 
+}
+
+void NeuralNetwork::saveToXML(const QString& path)
+{
+    QFile file(path);
+    if(!file.open(QFile::WriteOnly))
+    {
+        std::cout<<"File \""<<path.toStdString()<<"\" could not be opened for read"<<std::endl;
+    }
+    file.write("<?xml version=\"1.0\"?>\n");
+    file.write("<neuralNetwork>\n");
+    foreach(NeuralLayer* layer,layers)
+    {
+        file.write("\t<layer>\n");
+        for(int ni=0,nc=layer->numberOfNuerons();ni<nc;ni++)
+        {
+            Neuron* neuron=layer->getNeuron(ni);
+            file.write( QString().sprintf("\t\t<neuron threshold=\"%f\">\n",neuron->getThreshold()).toAscii() );
+            for(int di=0,dc=neuron->numberOfDendrons();di<dc;di++)
+            {
+                file.write( QString().sprintf("\t\t\t<dendron weight=\"%f\"></dendron>\n",neuron->getDendronWeight(di)).toAscii() );
+            }
+            file.write("\t\t</neuron>\n");
+        }
+        file.write("\t</layer>\n");
+    }
+    file.write("</neuralNetwork>");
+    file.close();
 }
 
 int NeuralNetwork::numberOfLayers() const
