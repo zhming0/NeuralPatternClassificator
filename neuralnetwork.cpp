@@ -1,5 +1,5 @@
 #include "neuralnetwork.h"
 
-NeuralNetwork::NeuralNetwork(bool learn)
+NeuralNetwork::NeuralNetwork(QVector<int> sizeOfNetwork, bool learn)
 {
 }

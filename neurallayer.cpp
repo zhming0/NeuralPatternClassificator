@@ -1,5 +1,5 @@
 #include "neurallayer.h"
 
-NeuralLayer::NeuralLayer()
+NeuralLayer::NeuralLayer(NeuralNetwork* network, int numOfNeurons)
 {
 }

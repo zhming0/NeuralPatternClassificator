@@ -6,12 +6,13 @@
 class NeuralNetwork
 {
 public:
-    NeuralNetwork(bool learn);
+    NeuralNetwork(QVector<int> sizeOfNetwork,bool learn);
     void learn(QPair<QVector<double>, QVector<double> >, double eps, double lambda, double micro);
     QVector<double> test(QVector<double>);
 protected:
     void saveToXML();
     void readFromXML();
+    void setRandomNetwork();
 private:
     QVector<NeuralLayer> layers;
 };
