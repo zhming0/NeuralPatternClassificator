@@ -1,5 +1,5 @@
 #include "neuralnetwork.h"
 
-NeuralNetwork::NeuralNetwork()
+NeuralNetwork::NeuralNetwork(bool learn)
 {
 }

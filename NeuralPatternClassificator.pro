@@ -17,15 +17,19 @@ TEMPLATE = app
 
 SOURCES += main.cpp \
     neuralnetwork.cpp \
-    neuronlayer.cpp \
     neuron.cpp \
-    gradient.cpp
+    gradient.cpp \
+    neurallayer.cpp
 
 HEADERS += \
     neuralnetwork.h \
-    neuronlayer.h \
     neuron.h \
-    gradient.h
+    gradient.h \
+    neurallayer.h
+
+
+
+
 
 
 
