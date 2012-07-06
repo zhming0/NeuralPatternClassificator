@@ -1,14 +1,14 @@
-#include "networkxmlhandler.h"
+#include "neuralnetworkxmlhandler.h"
 #include "neuralnetwork.h"
 #include "neurallayer.h"
 #include "neuron.h"
 
-NetworkXmlHandler::NetworkXmlHandler(NeuralNetwork * _network)
+NeuralNetworkXmlHandler::NeuralNetworkXmlHandler(NeuralNetwork * _network)
 {
     network=_network;
 }
 
-bool NetworkXmlHandler::startElement(const QString & uri, const QString &localName, const QString &, const QXmlAttributes &atts)
+bool NeuralNetworkXmlHandler::startElement(const QString & uri, const QString &localName, const QString &, const QXmlAttributes &atts)
 {
     bool ret=true;
     if("neuralNetwork"==localName)
@@ -30,7 +30,7 @@ bool NetworkXmlHandler::startElement(const QString & uri, const QString &localNa
     return ret;
 }
 
-bool NetworkXmlHandler::endElement(const QString &, const QString &localName, const QString &)
+bool NeuralNetworkXmlHandler::endElement(const QString &, const QString &localName, const QString &)
 {
     bool ret=true;
     if("neuralNetwork"==localName)
@@ -60,3 +60,15 @@ bool NetworkXmlHandler::endElement(const QString &, const QString &localName, co
     }
     return ret;
 }
+
+
+void NeuralNetworkXmlHandler::setDocumentLocator(QXmlLocator *locator){};
+bool NeuralNetworkXmlHandler::startDocument(){return true;}
+bool NeuralNetworkXmlHandler::endDocument(){return true;}
+bool NeuralNetworkXmlHandler::startPrefixMapping(const QString &prefix, const QString &uri){return true;}
+bool NeuralNetworkXmlHandler::endPrefixMapping(const QString &prefix){return true;}
+bool NeuralNetworkXmlHandler::characters(const QString &ch){return true;}
+bool NeuralNetworkXmlHandler::ignorableWhitespace(const QString &ch){return true;}
+bool NeuralNetworkXmlHandler::processingInstruction(const QString &target, const QString &data){return true;}
+bool NeuralNetworkXmlHandler::skippedEntity(const QString &name){return true;}
+QString NeuralNetworkXmlHandler::errorString() const{return "";};

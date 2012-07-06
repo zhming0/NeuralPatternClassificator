@@ -20,11 +20,11 @@ SOURCES += main.cpp \
     neuron.cpp \
     gradient.cpp \
     neurallayer.cpp \
-    networkxmlhandler.cpp
+    neuralnetworkxmlhandler.cpp
 
 HEADERS += \
     neuralnetwork.h \
     neuron.h \
     gradient.h \
     neurallayer.h \
-    networkxmlhandler.h
+    neuralnetworkxmlhandler.h

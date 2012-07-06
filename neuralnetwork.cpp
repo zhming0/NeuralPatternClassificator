@@ -1,8 +1,9 @@
 #include "neuralnetwork.h"
+#include "neuralnetworkxmlhandler.h"
+#include "gradient.h"
 #include <ctime>
 #include <QFile>
-#include<iostream>
-#include"gradient.h"
+#include <iostream>
 NeuralNetwork::NeuralNetwork(const QVector<int>& sizeOfNetwork)
 {
     for (int i = 0; i < sizeOfNetwork.size(); i++)
@@ -18,7 +19,16 @@ NeuralNetwork::NeuralNetwork(const QString& path)
 
 void NeuralNetwork::readFromXML(const QString& path)
 {
-
+    QFile file(path);
+    if(!file.open(QFile::ReadOnly))
+    {
+        std::cout<<"File \""<<path.toStdString()<<"\" could not be opened for reading"<<std::endl;
+    }
+    NeuralNetworkXmlHandler handler(this);
+    QXmlSimpleReader reader;
+    reader.setContentHandler(&handler);
+    reader.parse(QXmlInputSource(&file));
+    file.close();
 }
 
 void NeuralNetwork::saveToXML(const QString& path)
@@ -26,7 +36,7 @@ void NeuralNetwork::saveToXML(const QString& path)
     QFile file(path);
     if(!file.open(QFile::WriteOnly))
     {
-        std::cout<<"File \""<<path.toStdString()<<"\" could not be opened for read"<<std::endl;
+        std::cout<<"File \""<<path.toStdString()<<"\" could not be opened for writing"<<std::endl;
     }
     file.write("<?xml version=\"1.0\"?>\n");
     file.write("<neuralNetwork>\n");
