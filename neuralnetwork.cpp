@@ -107,6 +107,7 @@ void NeuralNetwork::learn(const QVector<QVector<double> >& inputSet, const QVect
         curE = totalGradient.getGradientAbs();
         curK++;
     }
+    this->saveToXML("~/Desktop/test.xml");
 }
 
 QVector<double> NeuralNetwork::activate(const QVector<double>& input)
@@ -126,8 +127,7 @@ QVector<double> NeuralNetwork::activate(const QVector<double>& input)
                     sum += currentNeuron->getDendronWeight(k) * this->getLayer(i-1)->getNeuron(k)->getOutput();
                 }
             }
-
-            currentNeuron->setOutput(sum);
+            currentNeuron->setOutput(gainFunction(sum));
         }
     }
 
@@ -144,7 +144,44 @@ double NeuralNetwork::gainFunction(double value) const
 
 Gradient NeuralNetwork::computePartialGradient(const QVector<double>& requiredOutput)
 {
+    Gradient res(this);
+    for (int i = this->numberOfLayers() - 1; i >= 1; i--)
+    {
+        NeuralLayer* currentLayer = this->getLayer(i);
+        if (i == this->numberOfLayers() - 1) {
+            for (int j = 0; j < currentLayer->numberOfNuerons(); j++)
+            {
+                Neuron* neuron = currentLayer->getNeuron(j);
+                res.setThreshold(i, j, neuron->getOutput() * (1.0 - neuron->getOutput()) * (neuron->getOutput() - requiredOutput[j]));
+            }
 
+            for (int j = 0; j < currentLayer->numberOfNuerons(); j++)
+            {
+                Neuron* neuron = currentLayer->getNeuron(j);
+                for (int k = 0; k < neuron->numberOfDendrons(); k++)
+                    res.setWeight(i, j, k, res.getThreshold(i, j) * this->getLayer(i - 1)->getNeuron(k)->getOutput());
+            }
+
+        } else {
+            for (int j = 0; j < this->getLayer(i + 1)->numberOfNuerons(); j++)
+            {
+                Neuron* neuron = currentLayer->getNeuron(j);
+                double tmp_sum = 0;
+                for (int k = 0; k < neuron->numberOfDendrons(); k++)
+                    tmp_sum += res.getThreshold(i + 1, j) * this->getLayer(i + 1)->getNeuron(j)->getDendronWeight(j);
+                res.setThreshold(i, j, neuron->getOutput() * (1.0 - this->getLayer(i + 1)->getNeuron(j)->getOutput()) * tmp_sum);
+                //res.setThreshold(i, j, neuron->getOutput() * (1.0 - neuron->getOutput()) * tmp_sum);
+            }
+
+            for (int j = 0; j < currentLayer->numberOfNuerons(); j++)
+            {
+                Neuron* neuron = currentLayer->getNeuron(j);
+                for (int k = 0; k < neuron->numberOfDendrons(); k++)
+                    res.setWeight(i, j, k, res.getThreshold(i, j) * this->getLayer(i - 1)->getNeuron(j)->getOutput());
+            }
+        }
+    }
+    return res;
 }
 
 double NeuralNetwork::random()
