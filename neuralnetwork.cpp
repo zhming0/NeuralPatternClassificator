@@ -47,7 +47,7 @@ double NeuralNetwork::random()
     srand((int)time(NULL));
     int tmp = rand() % 2000;
     double result = (double) tmp;
-    result /= 100.0;
+    result /= 1000.0;
     return result - 1.0;
 }
 
