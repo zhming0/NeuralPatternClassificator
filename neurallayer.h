@@ -8,6 +8,7 @@ class NeuralLayer
 public:
     NeuralLayer(NeuralNetwork* network, int numOfNeurons);
     int numberOfNuerons() const;
+    Neuron* getNeuron(int index);
 private:
     QVector<Neuron*> neurons;
     NeuralNetwork* network;

@@ -20,6 +20,7 @@ protected:
     QVector<double> activate(QVector<double> input);
     Gradient computeTotalGradient(const QVector<QVector<double> >& inputSet, const QVector<QVector<double> >& outputSet);
     Gradient computePartialGradient(const QVector<double>& input, const QVector<double>& requiredOutput);
+    double random();
 private:
     QVector<NeuralLayer*> layers;
 };
