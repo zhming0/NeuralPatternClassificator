@@ -151,6 +151,7 @@ void NeuralNetwork::learn(const QVector<QVector<double> >& inputSet, const QVect
 
 QVector<double> NeuralNetwork::activate(const QVector<double>& input)
 {
+    printf("Here------numberOfLayers = %d\n", this -> numberOfLayers());
     for (int i = 0; i < this->numberOfLayers(); i++)
     {
         NeuralLayer* currentLayer = this->getLayer(i);

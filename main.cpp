@@ -36,12 +36,14 @@ int main(int argc, char *argv[])
         NeuralNetwork network("/Users/M/Desktop/test.xml");
         QImage image(argv[3]);
         QVector<double> res = network.test(fromImageToVector(image));
+        printf("Finish testing!\n");
         QString alphaString = "0123456789abcdefghijklmnopqrstuvwxyz";
-        for (int i = 0; i < res.size(); i++)
+        for (int i = 0; i < res.size(); i++) {
             if (res[i] == 1) {
-                std::cout<<alphaString[i] << std::cout;
+                std::cout<<alphaString.toStdString()[i] << std::cout;
                 break;
             }
+        }
     }else if (argc == 6 && QString(argv[1]) == "-learn" && QString(argv[2]) == "-i" && QString(argv[4]) == "-o") {
         std::cout << "Start Learning" << std::endl;
         QString alphaString = "0123456789abcdefghijklmnopqrstuvwxyz";
@@ -59,7 +61,7 @@ int main(int argc, char *argv[])
             QVector<double> character;
             for (int j = 0; j < alphaString.length(); j++)
             {
-                if (list[i][j] == alphaString[j])
+                if (list[i][0] == alphaString[j])
                     character.push_back(1);
                 else
                     character.push_back(0);

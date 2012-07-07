@@ -37,12 +37,15 @@ bool NeuralNetworkXmlHandler::endElement(const QString &, const QString &localNa
     {
     }else if("layer"==localName)
     {
+        printf("Hello!!!!!\n");
         NeuralLayer* layer=new NeuralLayer(network,currentLayer.count());
-        network->layers.push_back(layer);
-        foreach(Neuron* neuron,currentLayer)
+        for(int i = 0; i < currentLayer.size(); i++)
         {
-            layer->neurons.push_back(neuron);
+            layer->getNeuron(i)->setThreshold(currentLayer[i]->getThreshold());
+            for (int j = 0; j < layer->getNeuron(i)->numberOfDendrons(); j++)
+                layer->getNeuron(i)->setDendronWeight(j, currentLayer[i]->getThreshold());
         }
+        network->layers.push_back(layer);
     }else if("neuron"==localName)
     {
         Neuron *ins=new Neuron(currentNeuron.count(),currentNeuronThreshold);
