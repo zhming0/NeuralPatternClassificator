@@ -6,6 +6,7 @@
 #include<QStringList>
 #include<QVector>
 #include<QImage>
+#include<QColor>
 
 QVector<double> fromImageToVector(const QImage& image)
 {
@@ -14,7 +15,7 @@ QVector<double> fromImageToVector(const QImage& image)
     for(int x=0;x<size.width();x++)
         for(int y=0;y<size.height();y++)
         {
-            res<<image.pixel(x,y);
+            res<<qGray(image.pixel(x,y));
         }
     return res;
 }
@@ -27,7 +28,6 @@ int main(int argc, char *argv[])
                             QString("-recognize -i <snapshot>\n")+
                             QString("-learn -i <template path> -o <Output path>\n")+
                             QString("-----------------------------------\n");
-    std::cout << argc << std::endl;
     if (argc == 1)
     {
         std::cout << helpString.toStdString() << std::endl;
@@ -35,14 +35,20 @@ int main(int argc, char *argv[])
     }else if (argc == 4 && QString(argv[1]) == "-recognize" && QString(argv[2]) == "-i") {
         NeuralNetwork network("/Users/M/Desktop/test.xml");
         QImage image(argv[3]);
+        if (image.isNull())
+        {
+            std::cout << "No such file." << std::endl;
+            return -1;
+        }
+        QVector<double> tmp = fromImageToVector(image);
+        for (int i = 0; i < tmp.size(); i++)
+            std::cout << tmp[i] << std::endl;
+
         QVector<double> res = network.test(fromImageToVector(image));
-        printf("Finish testing!\n");
+        printf("Succeed Recognizing!!!\n");
         QString alphaString = "0123456789abcdefghijklmnopqrstuvwxyz";
         for (int i = 0; i < res.size(); i++) {
-            if (res[i] == 1) {
-                std::cout<<alphaString.toStdString()[i] << std::cout;
-                break;
-            }
+            printf("%f\n", res[i]);
         }
     }else if (argc == 6 && QString(argv[1]) == "-learn" && QString(argv[2]) == "-i" && QString(argv[4]) == "-o") {
         std::cout << "Start Learning" << std::endl;
@@ -67,15 +73,14 @@ int main(int argc, char *argv[])
                     character.push_back(0);
             }
             output.push_back(character);
-
             QImage image("/Users/M/Desktop/alphabet_10x16_bw/" + list[i]);
             QVector<double> bmp = fromImageToVector(image);
             input<<bmp;
         }
         QVector<int> dim;
-        dim.push_back(input.size());
+        dim.push_back(input[0].size());
         dim.push_back(30);
-        dim.push_back(output.size());
+        dim.push_back(output[0].size());
         NeuralNetwork network(dim);
         network.learn(input, output, 8000, 0.07, 0.05, 0.5);
     }else {

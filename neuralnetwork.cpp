@@ -13,11 +13,13 @@ NeuralNetwork::NeuralNetwork(const QVector<int>& sizeOfNetwork)
     {
         this->layers.push_back(new NeuralLayer(this, sizeOfNetwork[i]));
     }
+    srand((unsigned) time(NULL));
 }
 
 NeuralNetwork::NeuralNetwork(const QString& path)
 {
     this->readFromXML(path);
+    srand((unsigned) time(NULL));
 }
 
 QVector<double> NeuralNetwork::test(const QVector<double> & input)
@@ -100,7 +102,12 @@ void NeuralNetwork::learn(const QVector<QVector<double> >& inputSet, const QVect
         //Activate and compute gradient
         for (int io = 0; io < ioSize; io++)
         {
-            activate(inputSet[io]);
+            QVector<double> tmp = activate(inputSet[io]);
+//            for (int i = 0; i < tmp.size(); i++)
+//                std::cout << tmp[i] << " ";
+//            std::cout << std::endl;
+//            this->saveToXML("/Users/M/Desktop/test.xml");
+//            return;
 
             Gradient partialGradient = computePartialGradient(outputSet[io]);
 
@@ -118,15 +125,17 @@ void NeuralNetwork::learn(const QVector<QVector<double> >& inputSet, const QVect
         }
 
         // update weights and thresholds
-        for(int il=layers.count()-1;il>0;il--)
+        for(int il=this->numberOfLayers() - 1;il>0;il--)
         {
-            NeuralLayer* layer=layers.at(il);
+            NeuralLayer* layer=this->getLayer(il);
             for(int in=0,cn=layer->numberOfNuerons();in<cn;in++)
             {
                 Neuron* neuron=layer->getNeuron(in);
                 double delta=-lambda*totalGradient.getThreshold(il,in)+micro*deltaGradient.getThreshold(il,in);
+                //printf("delta = %f\n", delta);
                 neuron->setThreshold(neuron->getThreshold()+delta);
                 deltaGradient.setThreshold(il,in,delta);
+                //printf("neuron.threshold = %f\n", neuron->getThreshold());
             }
 
             for(int in=0,cn=layer->numberOfNuerons();in<cn;in++)
@@ -135,7 +144,9 @@ void NeuralNetwork::learn(const QVector<QVector<double> >& inputSet, const QVect
                 for(int ii=0,ci=neuron->numberOfDendrons();ii<ci;ii++)
                 {
                     double delta= -lambda*totalGradient.getWeight(il,in,ii)+micro*deltaGradient.getWeight(il,in,ii);
+                    //printf("delta = %f\n", delta);
                     neuron->setDendronWeight(ii,neuron->getDendronWeight(ii)+delta);
+                    //printf("neuron.weight = %f\n", neuron->getDendronWeight(ii));
                     deltaGradient.setWeight(il,in,ii,delta);
                 }
             }
@@ -144,14 +155,14 @@ void NeuralNetwork::learn(const QVector<QVector<double> >& inputSet, const QVect
 
         curE = totalGradient.getGradientAbs();
         curK++;
-        printf("curE = %f, curK = %d\n", curE, curK);
+        if (curK % 20 == 0)
+            printf("curE = %f, curK = %d\n", curE, curK);
     }
     this->saveToXML("/Users/M/Desktop/test.xml");
 }
 
 QVector<double> NeuralNetwork::activate(const QVector<double>& input)
 {
-    printf("Here------numberOfLayers = %d\n", this -> numberOfLayers());
     for (int i = 0; i < this->numberOfLayers(); i++)
     {
         NeuralLayer* currentLayer = this->getLayer(i);
@@ -172,8 +183,8 @@ QVector<double> NeuralNetwork::activate(const QVector<double>& input)
     }
 
     QVector<double> result;
-    for (int i = 0; i < this->getLayer(this->numberOfLayers() - 1)->numberOfNuerons(); i++)
-        result.push_back(this->getLayer(this->numberOfLayers() - 1)->getNeuron(i)->getOutput());
+    for (int i = 0; i < this->getLayer(this->numberOfLayers() - 1) -> numberOfNuerons(); i++)
+        result.push_back(this->getLayer(this->numberOfLayers() - 1) -> getNeuron(i)->getOutput());
     return result;
 }
 
@@ -227,7 +238,10 @@ Gradient NeuralNetwork::computePartialGradient(const QVector<double>& requiredOu
 
 double NeuralNetwork::random()
 {
-    srand((int)time(NULL));
+    //std::cout << time(NULL) <<std::endl;
+    //srand(time(NULL) / 1000);
+    //srand((unsigned) time(NULL));
+    //srand(rand());
     int tmp = rand() % 2000;
     double result = (double) tmp;
     result /= 1000.0;
@@ -243,6 +257,7 @@ void NeuralNetwork::genarateRandomNetwork()
         {
             Neuron* currentNeuron = currentLayer->getNeuron(j);
             currentNeuron->setThreshold(random());
+            //printf("threshold = %f\n", currentNeuron->getThreshold());
             for (int k = 0; k < currentNeuron->numberOfDendrons(); k++)
                 currentNeuron->setDendronWeight(k, random());
         }

@@ -37,7 +37,6 @@ bool NeuralNetworkXmlHandler::endElement(const QString &, const QString &localNa
     {
     }else if("layer"==localName)
     {
-        printf("Hello!!!!!\n");
         NeuralLayer* layer=new NeuralLayer(network,currentLayer.count());
         for(int i = 0; i < currentLayer.size(); i++)
         {
