@@ -28,12 +28,12 @@ int main(int argc, char *argv[])
                             QString("-learn -i <template path> -o <Output path>\n")+
                             QString("-----------------------------------\n");
     std::cout << argc << std::endl;
-    if (false&&argc == 1)
+    if (argc == 1)
     {
         std::cout << helpString.toStdString() << std::endl;
         //a.quit();
-    }else if (true||argc == 4 && QString(argv[1]) == "-recognize" && QString(argv[2]) == "-i") {
-        NeuralNetwork network("../test.xml");
+    }else if (argc == 4 && QString(argv[1]) == "-recognize" && QString(argv[2]) == "-i") {
+        NeuralNetwork network("/Users/M/Desktop/test.xml");
         QImage image(argv[3]);
         QVector<double> res = network.test(fromImageToVector(image));
         printf("Finish testing!\n");
