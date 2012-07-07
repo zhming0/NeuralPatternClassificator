@@ -8,6 +8,8 @@
 #include<QImage>
 #include<QColor>
 #include<QHash>
+#include <QDebug>
+#include <QTextCodec>
 
 QVector<double> fromImageToVector(const QImage& image)
 {
@@ -33,11 +35,11 @@ int main(int argc, char *argv[])
         std::cout << helpString.toStdString() << std::endl;
     }else
     {
-        QString cmd=argv[1];
+        QString cmd=QTextCodec::codecForLocale()->toUnicode(argv[1]);
         QHash<QString,QString> args;
         for(int i=2;i<argc;i+=2)
         {
-            args[argv[i]]=argv[i+1];
+            args[argv[i]]=QTextCodec::codecForLocale()->toUnicode(argv[i+1]);
         }
         if(cmd == "-recognize" && args.contains("-i") && args.contains("-x"))
         {
@@ -53,7 +55,7 @@ int main(int argc, char *argv[])
             printf("Succeed Recognizing!!!\n");
             QString alphaString = (args.contains("-s"))?args["-s"]:"0123456789abcdefghijklmnopqrstuvwxyz";
             for (int i = 0; i < res.size(); i++) {
-                std::cout << alphaString.toStdString()[i] << " : ";
+                qDebug() << alphaString[i] << " : ";
                 printf("%f\n", res[i]);
             }
         }else if(cmd == "-learn" && args.contains("-i") && args.contains("-o"))
@@ -68,7 +70,7 @@ int main(int argc, char *argv[])
 
             for (int i = 0; i < list.length(); i++)
             {
-                std::cout << "File: " << list[i].toStdString() << std::endl;
+                qDebug() << "File: " << list[i];
                 if (list[i][0] == '.')
                     continue;
                 QVector<double> character;
@@ -89,7 +91,7 @@ int main(int argc, char *argv[])
             dim.push_back(20);
             dim.push_back(output[0].size());
             NeuralNetwork network(dim);
-            bool ok;
+            bool ok=true;
             int maxK=args.contains("-maxK")?args["-maxK"].toInt(&ok):8000;
             if(!ok)
             {
