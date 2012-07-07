@@ -6,8 +6,6 @@
 
 QT       += core xml
 
-QT       -= gui
-
 TARGET = NeuralPatternClassificator
 CONFIG   += console
 CONFIG   -= app_bundle

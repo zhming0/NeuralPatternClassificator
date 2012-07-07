@@ -10,7 +10,7 @@ public:
     NeuralNetwork(const QVector<int>& sizeOfNetwork);
     NeuralNetwork(const QString& path);
     void learn(const QVector<QVector<double> >& inputSet, const QVector<QVector<double> >& outputSet, int maxK, double eps, double lambda, double micro);
-    QVector<double> test(QVector<double>);
+    QVector<double> test(const QVector<double>&);
     int numberOfLayers() const;
     NeuralLayer* getLayer(int index) const;
 protected:
