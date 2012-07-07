@@ -13,8 +13,8 @@ public:
     QVector<double> test(const QVector<double>&);
     int numberOfLayers() const;
     NeuralLayer* getLayer(int index) const;
-protected:
     void saveToXML(const QString& path);
+protected:
     void readFromXML(const QString& path);
     void genarateRandomNetwork();
     QVector<double> activate(const QVector<double>& input);

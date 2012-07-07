@@ -166,7 +166,7 @@ void NeuralNetwork::learn(const QVector<QVector<double> >& inputSet, const QVect
         if (curK % 20 == 0)
             printf("curE = %f, curK = %d\n", curE, curK);
     }
-    this->saveToXML("/Users/M/Desktop/test.xml");
+    //this->saveToXML("/Users/M/Desktop/test.xml");
 }
 
 QVector<double> NeuralNetwork::activate(const QVector<double>& input)
