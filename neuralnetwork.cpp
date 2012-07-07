@@ -102,12 +102,7 @@ void NeuralNetwork::learn(const QVector<QVector<double> >& inputSet, const QVect
         //Activate and compute gradient
         for (int io = 0; io < ioSize; io++)
         {
-            QVector<double> tmp = activate(inputSet[io]);
-//            for (int i = 0; i < tmp.size(); i++)
-//                std::cout << tmp[i] << " ";
-//            std::cout << std::endl;
-//            this->saveToXML("/Users/M/Desktop/test.xml");
-//            return;
+            activate(inputSet[io]);
 
             Gradient partialGradient = computePartialGradient(outputSet[io]);
 
@@ -131,7 +126,7 @@ void NeuralNetwork::learn(const QVector<QVector<double> >& inputSet, const QVect
             for(int in=0,cn=layer->numberOfNuerons();in<cn;in++)
             {
                 Neuron* neuron=layer->getNeuron(in);
-                double delta=-lambda*totalGradient.getThreshold(il,in)+micro*deltaGradient.getThreshold(il,in);
+                double delta=-lambda * totalGradient.getThreshold(il,in) + micro * deltaGradient.getThreshold(il,in);
                 //printf("delta = %f\n", delta);
                 neuron->setThreshold(neuron->getThreshold()+delta);
                 deltaGradient.setThreshold(il,in,delta);
@@ -143,7 +138,7 @@ void NeuralNetwork::learn(const QVector<QVector<double> >& inputSet, const QVect
                 Neuron* neuron=layer->getNeuron(in);
                 for(int ii=0,ci=neuron->numberOfDendrons();ii<ci;ii++)
                 {
-                    double delta= -lambda*totalGradient.getWeight(il,in,ii)+micro*deltaGradient.getWeight(il,in,ii);
+                    double delta= -lambda * totalGradient.getWeight(il,in,ii) + micro * deltaGradient.getWeight(il,in,ii);
                     //printf("delta = %f\n", delta);
                     neuron->setDendronWeight(ii,neuron->getDendronWeight(ii)+delta);
                     //printf("neuron.weight = %f\n", neuron->getDendronWeight(ii));

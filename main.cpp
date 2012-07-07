@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
         }
         QVector<int> dim;
         dim.push_back(input[0].size());
-        dim.push_back(30);
+        dim.push_back(20);
         dim.push_back(output[0].size());
         NeuralNetwork network(dim);
         network.learn(input, output, 8000, 0.07, 0.05, 0.5);

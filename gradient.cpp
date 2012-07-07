@@ -59,8 +59,12 @@ double Gradient::getGradientAbs() const
     for (int i = 0; i < network->numberOfLayers(); i++)
     {
         res += getVectorAbs(this->threshold[i]);
-        for (int j = 0; j < this->weights[i].size(); j++)
-            res += getVectorAbs(this->weights[i][j]);
+        double tmpSum = 0;
+        for (int j = 0; j < this->weights[i].size(); j++) {
+            double tmp = getVectorAbs(this->weights[i][j]);
+            tmpSum += tmp * tmp;
+        }
+        res += qSqrt(tmpSum);
     }
     return res;
 }
