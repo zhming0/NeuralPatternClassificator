@@ -23,7 +23,6 @@ QVector<double> fromImageToVector(const QImage& image)
 
 int main(int argc, char *argv[])
 {
-    //QCoreApplication a(argc, argv);
     QString helpString =    QString("NeuralPatternClassificator V0.1\n") +
                             QString("---------------help----------------\n") +
                             QString("-recognize -i <snapshot image> -x <Xml path> [-s <Alpha string>]\n")+
