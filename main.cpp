@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
     QString helpString =    QString("NeuralPatternClassificator V0.1\n") +
                             QString("---------------help----------------\n") +
                             QString("-recognize -i <snapshot>\n")+
-                            QString("-learn -i <template path> -o <Output path>\n")+
+                            QString("-learn -i <Template path> -o <Output path>\n")+
                             QString("-----------------------------------\n");
     if (argc == 1)
     {
@@ -40,14 +40,15 @@ int main(int argc, char *argv[])
             std::cout << "No such file." << std::endl;
             return -1;
         }
-        QVector<double> tmp = fromImageToVector(image);
-        for (int i = 0; i < tmp.size(); i++)
-            std::cout << tmp[i] << std::endl;
+        fromImageToVector(image);
+        //for (int i = 0; i < tmp.size(); i++)
+        //    std::cout << tmp[i] << std::endl;
 
         QVector<double> res = network.test(fromImageToVector(image));
         printf("Succeed Recognizing!!!\n");
         QString alphaString = "0123456789abcdefghijklmnopqrstuvwxyz";
         for (int i = 0; i < res.size(); i++) {
+            std::cout << alphaString.toStdString()[i] << " : ";
             printf("%f\n", res[i]);
         }
     }else if (argc == 6 && QString(argv[1]) == "-learn" && QString(argv[2]) == "-i" && QString(argv[4]) == "-o") {

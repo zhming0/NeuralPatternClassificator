@@ -42,7 +42,7 @@ bool NeuralNetworkXmlHandler::endElement(const QString &, const QString &localNa
         {
             layer->getNeuron(i)->setThreshold(currentLayer[i]->getThreshold());
             for (int j = 0; j < layer->getNeuron(i)->numberOfDendrons(); j++)
-                layer->getNeuron(i)->setDendronWeight(j, currentLayer[i]->getThreshold());
+                layer->getNeuron(i)->setDendronWeight(j, currentLayer[i]->getDendronWeight(j));
         }
         network->layers.push_back(layer);
     }else if("neuron"==localName)

@@ -76,8 +76,10 @@ int NeuralNetwork::numberOfLayers() const
 
 NeuralLayer* NeuralNetwork::getLayer(int index) const
 {
-    if (index >= layers.size())
+    if (index >= layers.size()) {
+        std::cout << "NeuralNetwork::getLayer() : index out of bounds" << std::endl;
         return NULL;
+    }
     return this->layers[index];
 }
 
@@ -99,14 +101,22 @@ void NeuralNetwork::learn(const QVector<QVector<double> >& inputSet, const QVect
     {
         Gradient totalGradient(this);
 
+        curE = 0;
         //Activate and compute gradient
         for (int io = 0; io < ioSize; io++)
         {
-            activate(inputSet[io]);
+            QVector<double> trainOutput = activate(inputSet[io]);
+            double error = 0;
+
+            for (int i = 0; i < trainOutput.size(); i++)
+                error += ((outputSet[io][i] - trainOutput[i]) * (outputSet[io][i] - trainOutput[i]));
+            error /= 2.0;
+
+            curE += error;
 
             Gradient partialGradient = computePartialGradient(outputSet[io]);
 
-            //Add partial gradient to total gradient
+            //Add partial gradient to total gradientx
             for (int i = this->numberOfLayers() - 1; i >= 1; i--) {
                 NeuralLayer* currentLayer = this->getLayer(i);
                 for (int j = 0; j < currentLayer->numberOfNuerons(); j++)
@@ -119,8 +129,10 @@ void NeuralNetwork::learn(const QVector<QVector<double> >& inputSet, const QVect
             }
         }
 
+        curE = (double)curE / ioSize;
+
         // update weights and thresholds
-        for(int il=this->numberOfLayers() - 1;il>0;il--)
+        for(int il=this->numberOfLayers() - 1; il>0; il--)
         {
             NeuralLayer* layer=this->getLayer(il);
             for(int in=0,cn=layer->numberOfNuerons();in<cn;in++)
@@ -148,7 +160,8 @@ void NeuralNetwork::learn(const QVector<QVector<double> >& inputSet, const QVect
         }
 
 
-        curE = totalGradient.getGradientAbs();
+        //curE = totalGradient.getGradientAbs();
+
         curK++;
         if (curK % 20 == 0)
             printf("curE = %f, curK = %d\n", curE, curK);
@@ -216,8 +229,8 @@ Gradient NeuralNetwork::computePartialGradient(const QVector<double>& requiredOu
                 double tmp_sum = 0;
                 for (int k = 0; k < this->getLayer(i + 1)->numberOfNuerons(); k++)
                     tmp_sum += res.getThreshold(i + 1, k) * this->getLayer(i + 1)->getNeuron(k)->getDendronWeight(j);
-                res.setThreshold(i, j, neuron->getOutput() * (1.0 - this->getLayer(i + 1)->getNeuron(j)->getOutput()) * tmp_sum);
-                //res.setThreshold(i, j, neuron->getOutput() * (1.0 - neuron->getOutput()) * tmp_sum);
+                //res.setThreshold(i, j, neuron->getOutput() * (1.0 - this->getLayer(i + 1)->getNeuron(j)->getOutput()) * tmp_sum);
+                res.setThreshold(i, j, neuron->getOutput() * (1.0 - neuron->getOutput()) * tmp_sum);
             }
 
             for (int j = 0; j < currentLayer->numberOfNuerons(); j++)
