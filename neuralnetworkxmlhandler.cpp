@@ -13,7 +13,7 @@ bool NeuralNetworkXmlHandler::startElement(const QString & uri, const QString &l
     bool ret=true;
     if("neuralNetwork"==localName)
     {
-    }if("layer"==localName)
+    }else if("layer"==localName)
     {
         currentLayer.clear();
     }else if("neuron"==localName)
