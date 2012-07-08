@@ -10,7 +10,7 @@
 #include<QHash>
 #include <QDebug>
 #include <QTextCodec>
-//0123456789abcdefghijklmnopqrstuvwxyz云京冀吉宁川新晋桂沪津浙渝湘琼甘皖粤苏蒙藏豫贵赣辽鄂闽陕青鲁黑
+//0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ云京冀吉宁川新晋桂沪津浙渝湘琼甘皖粤苏蒙藏豫贵赣辽鄂闽陕青鲁黑
 
 QVector<double> getImageFeature(const QImage& image)
 {
@@ -46,8 +46,9 @@ QImage normalizeImage(const QImage& image)
 
 QVector<double> fromImageToVector(const QImage& img)
 {
-    //return getImageFeature(image);
     QImage image = normalizeImage(img);
+    //return getImageFeature(image);
+
     QVector<double> res;
     QSize size=image.size();
     for(int x=0;x<size.width();x++)
@@ -91,7 +92,7 @@ int main(int argc, char *argv[])
 
             QVector<double> res = network.test(fromImageToVector(image));
             printf("Succeed Recognizing!!!\n");
-            QString alphaString = (args.contains("-s"))?args["-s"]:"0123456789abcdefghijklmnopqrstuvwxyz";
+            QString alphaString = (args.contains("-s"))?args["-s"]:"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
             //double max=res[0];
             int maxI=0;
             for (int i = 0; i < res.size(); i++) {
@@ -104,7 +105,7 @@ int main(int argc, char *argv[])
         }else if(cmd == "-learn" && args.contains("-i") && args.contains("-o"))
         {
             std::cout << "Start Learning" << std::endl;
-            QString alphaString = (args.contains("-s"))?args["-s"]:"0123456789abcdefghijklmnopqrstuvwxyz";
+            QString alphaString = (args.contains("-s"))?args["-s"]:"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
             QDir dir(args["-i"]);
             QStringList list = dir.entryList();
             std::cout << list.length() << std::endl;
@@ -119,9 +120,10 @@ int main(int argc, char *argv[])
                 QVector<double> character;
                 for (int j = 0; j < alphaString.length(); j++)
                 {
-                    if (list[i][0] == alphaString[j])
+                    if (list[i][0] == alphaString[j]) {
+                        //qDebug() << list[i][0] << " : " << alphaString[j];
                         character.push_back(1);
-                    else
+                    }else
                         character.push_back(0);
                 }
                 output.push_back(character);
@@ -136,7 +138,7 @@ int main(int argc, char *argv[])
             }
             QVector<int> dim;
             dim.push_back(input[0].size());
-            dim.push_back(120);
+            dim.push_back(60);
             dim.push_back(output[0].size());
             NeuralNetwork network(dim);
             bool ok=true;
