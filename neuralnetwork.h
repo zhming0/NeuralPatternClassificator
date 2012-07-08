@@ -14,6 +14,8 @@ public:
     int numberOfLayers() const;
     NeuralLayer* getLayer(int index) const;
     void saveToXML(const QString& path);
+    QString getNetworkString();
+    void setNetworkString(QString);
 protected:
     void readFromXML(const QString& path);
     void genarateRandomNetwork();
@@ -25,6 +27,7 @@ protected:
 private:
     friend class NeuralNetworkXmlHandler;
     QVector<NeuralLayer*> layers;
+    QString _networkString;
 };
 
 #endif // NEURALNETWORK_H
