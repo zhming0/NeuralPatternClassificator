@@ -54,10 +54,15 @@ int main(int argc, char *argv[])
             QVector<double> res = network.test(fromImageToVector(image));
             printf("Succeed Recognizing!!!\n");
             QString alphaString = (args.contains("-s"))?args["-s"]:"0123456789abcdefghijklmnopqrstuvwxyz";
+            //double max=res[0];
+            int maxI=0;
             for (int i = 0; i < res.size(); i++) {
                 qDebug() << alphaString[i] << " : ";
                 printf("%f\n", res[i]);
+                if(res[i]>res[maxI])
+                    maxI=i;
             }
+            qDebug()<<"I suppose its:"<<alphaString[maxI];
         }else if(cmd == "-learn" && args.contains("-i") && args.contains("-o"))
         {
             std::cout << "Start Learning" << std::endl;
