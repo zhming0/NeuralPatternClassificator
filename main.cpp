@@ -10,9 +10,38 @@
 #include<QHash>
 #include <QDebug>
 #include <QTextCodec>
+//0123456789abcdefghijklmnopqrstuvwxyz云京冀吉宁川新晋桂沪津浙渝湘琼甘皖粤苏蒙藏豫贵赣辽鄂闽陕青鲁黑
+
+QVector<double> getImageFeature(const QImage& image)
+{
+    QVector<double> ret;
+    QSize size=image.size();
+
+    for (int x = 0; x < size.width(); x++) {
+        double sum = 0;
+        for (int y = 0; y < size.height(); y++)
+        {
+            if (qGray(image.pixel(x, y)) != 0)
+                sum++;
+        }
+        ret.push_back(sum);
+    }
+
+    for (int x = 0; x < size.height(); x++) {
+        double sum = 0;
+        for (int y = 0; y < size.width(); y++)
+        {
+            if (qGray(image.pixel(y, x)) != 0)
+                sum++;
+        }
+        ret.push_back(sum);
+    }
+    return ret;
+}
 
 QVector<double> fromImageToVector(const QImage& image)
 {
+    //return getImageFeature(image);
     QVector<double> res;
     QSize size=image.size();
     for(int x=0;x<size.width();x++)
@@ -21,6 +50,11 @@ QVector<double> fromImageToVector(const QImage& image)
             res<<qGray(image.pixel(x,y));
         }
     return res;
+}
+
+QImage normalizeImage(const QImage& image)
+{
+    return image.scaled(19, 10);
 }
 
 int main(int argc, char *argv[])
@@ -50,7 +84,9 @@ int main(int argc, char *argv[])
                 std::cout << "No such file." << std::endl;
                 return -1;
             }
-            fromImageToVector(image);
+
+            //image = normalizeImage(image);
+
             QVector<double> res = network.test(fromImageToVector(image));
             printf("Succeed Recognizing!!!\n");
             QString alphaString = (args.contains("-s"))?args["-s"]:"0123456789abcdefghijklmnopqrstuvwxyz";
@@ -88,6 +124,9 @@ int main(int argc, char *argv[])
                 }
                 output.push_back(character);
                 QImage image(args["-i"] + list[i]);
+
+                //image = normalizeImage(image);
+
                 QVector<double> bmp = fromImageToVector(image);
                 input<<bmp;
             }
