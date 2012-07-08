@@ -125,10 +125,12 @@ int main(int argc, char *argv[])
                         character.push_back(0);
                 }
                 output.push_back(character);
-                QImage image(args["-i"] + list[i]);
-
-                //image = normalizeImage(image);
-
+                QImage image(dir.absolutePath() + "/" + list[i]);
+                if(image.isNull())
+                {
+                    std::cout << "Bad input path" << std::endl;
+                    return -1;
+                }
                 QVector<double> bmp = fromImageToVector(image);
                 input<<bmp;
             }
@@ -142,25 +144,25 @@ int main(int argc, char *argv[])
             if(!ok)
             {
                 std::cout << "Bad input" << std::endl;
-                return 0;
+                return -1;
             }
             double eps=args.contains("-eps")?args["-eps"].toDouble(&ok):0.07;
             if(!ok)
             {
                 std::cout << "Bad input" << std::endl;
-                return 0;
+                return -1;
             }
             double lambda=args.contains("-lambda")?args["-lambda"].toDouble(&ok):0.05;
             if(!ok)
             {
                 std::cout << "Bad input" << std::endl;
-                return 0;
+                return -1;
             }
             double micro=args.contains("-micro")?args["-micro"].toDouble(&ok):0.5;
             if(!ok)
             {
                 std::cout << "Bad input" << std::endl;
-                return 0;
+                return -1;
             }
             network.learn(input, output, maxK, eps, lambda, micro);
             network.saveToXML(args["-o"]);
