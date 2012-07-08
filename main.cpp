@@ -8,6 +8,7 @@
 #include<QImage>
 #include<QColor>
 #include<QHash>
+#include<QPixmap>
 #include <QDebug>
 #include <QTextCodec>
 //0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ云京冀吉宁川新晋桂沪津浙渝湘琼甘皖粤苏蒙藏豫贵赣辽鄂闽陕青鲁黑
@@ -41,7 +42,7 @@ QVector<double> getImageFeature(const QImage& image)
 
 QImage normalizeImage(const QImage& image)
 {
-    return image.scaled(19, 10);
+    return image.scaled(15, 30,Qt::IgnoreAspectRatio,Qt::SmoothTransformation);
 }
 
 QVector<double> fromImageToVector(const QImage& img)
@@ -65,7 +66,7 @@ int main(int argc, char *argv[])
     QString helpString =    QString("NeuralPatternClassificator V0.1\n") +
                             QString("---------------help----------------\n") +
                             QString("-recognize -i <snapshot image> -x <Xml path> [-s <Alpha string>]\n")+
-                            QString("-learn -i <Template image dir> -o <Output xml path> [-s <Alpha string>] [-maxK] [-eps] [-lambda] [-micro]\n")+
+                            QString("-learn -i <Template image dir> -o <Output xml path> [-maxK] [-eps] [-lambda] [-micro]\n")+
                             QString("-----------------------------------\n");
     if (argc==1 || argc % 2 == 1)
     {
@@ -96,7 +97,13 @@ int main(int argc, char *argv[])
             //double max=res[0];
             int maxI=0;
             for (int i = 0; i < res.size(); i++) {
-                qDebug() << alphaString[i] << " : ";
+                if(i<alphaString.length())
+                {
+                    qDebug() << alphaString[i] << " : ";
+                }else
+                {
+                    qDebug() << "[" << i << "] : ";
+                }
                 printf("%f\n", res[i]);
                 if(res[i]>res[maxI])
                     maxI=i;
@@ -105,27 +112,39 @@ int main(int argc, char *argv[])
         }else if(cmd == "-learn" && args.contains("-i") && args.contains("-o"))
         {
             std::cout << "Start Learning" << std::endl;
-            QString alphaString = (args.contains("-s"))?args["-s"]:"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            //QString alphaString = (args.contains("-s"))?args["-s"]:"0123456789abcdefghijklmnopqrstuvwxyz";
             QDir dir(args["-i"]);
             QStringList list = dir.entryList();
             std::cout << list.length() << std::endl;
             QVector<QVector<double> > output;
             QVector<QVector<double> > input;
 
+
+            // generate alpha string
+            QHash<QChar,int> alphaStringPos;
+            QString alphaString="";
+            int alphaStringSize=0;
+            foreach(QString fname,list)
+            {
+                QChar initial=fname[0];
+                if (initial == '.')
+                    continue;
+                if(!alphaStringPos.contains(initial))
+                {
+                    alphaString.append(initial);
+                    alphaStringPos[initial]=alphaStringSize++;
+                }
+            }
+
             for (int i = 0; i < list.length(); i++)
             {
                 qDebug() << "File: " << list[i];
-                if (list[i][0] == '.')
+                QChar initial=list[i][0];
+                if (initial == '.')
                     continue;
                 QVector<double> character;
-                for (int j = 0; j < alphaString.length(); j++)
-                {
-                    if (list[i][0] == alphaString[j]) {
-                        //qDebug() << list[i][0] << " : " << alphaString[j];
-                        character.push_back(1);
-                    }else
-                        character.push_back(0);
-                }
+                character.fill(0.0,alphaStringSize);
+                character[alphaStringPos[initial]]=1;
                 output.push_back(character);
                 QImage image(dir.absolutePath() + "/" + list[i]);
                 if(image.isNull())
@@ -138,7 +157,9 @@ int main(int argc, char *argv[])
             }
             QVector<int> dim;
             dim.push_back(input[0].size());
-            dim.push_back(60);
+
+            dim.push_back(30);
+
             dim.push_back(output[0].size());
             NeuralNetwork network(dim);
             bool ok=true;
@@ -169,6 +190,7 @@ int main(int argc, char *argv[])
             network.learn(input, output, maxK, eps, lambda, micro);
             network.saveToXML(args["-o"]);
             std::cout << "Learnt!" << std::endl;
+            qDebug()<<"The output string is:"<< alphaString;
         }else
         {
             std::cout <<"Bad input!"<<std::endl<< helpString.toStdString() << std::endl;
