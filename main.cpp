@@ -39,9 +39,15 @@ QVector<double> getImageFeature(const QImage& image)
     return ret;
 }
 
-QVector<double> fromImageToVector(const QImage& image)
+QImage normalizeImage(const QImage& image)
+{
+    return image.scaled(19, 10);
+}
+
+QVector<double> fromImageToVector(const QImage& img)
 {
     //return getImageFeature(image);
+    QImage image = normalizeImage(img);
     QVector<double> res;
     QSize size=image.size();
     for(int x=0;x<size.width();x++)
@@ -49,12 +55,8 @@ QVector<double> fromImageToVector(const QImage& image)
         {
             res<<qGray(image.pixel(x,y));
         }
+    res << getImageFeature(image);
     return res;
-}
-
-QImage normalizeImage(const QImage& image)
-{
-    return image.scaled(19, 10);
 }
 
 int main(int argc, char *argv[])
@@ -132,7 +134,7 @@ int main(int argc, char *argv[])
             }
             QVector<int> dim;
             dim.push_back(input[0].size());
-            dim.push_back(20);
+            dim.push_back(120);
             dim.push_back(output[0].size());
             NeuralNetwork network(dim);
             bool ok=true;
