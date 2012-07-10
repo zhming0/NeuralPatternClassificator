@@ -22,6 +22,12 @@ NeuralNetwork::NeuralNetwork(const QString& path)
     srand((unsigned) time(NULL));
 }
 
+NeuralNetwork::~NeuralNetwork()
+{
+    for (int i = 0; i < this->numberOfLayers(); i++)
+        delete layers[i];
+}
+
 QVector<double> NeuralNetwork::test(const QVector<double> & input)
 {
     return activate(input);
@@ -48,24 +54,26 @@ void NeuralNetwork::saveToXML(const QString& path)
     {
         std::cout<<"File \""<<path.toStdString()<<"\" could not be opened for writing"<<std::endl;
     }
-    file.write("<?xml version=\"1.0\"?>\n");
-    file.write("<neuralNetwork>\n");
+    QString content;
+    content+="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+    content+="<neuralNetwork string=\""+getNetworkString()+"\">\n";
     foreach(NeuralLayer* layer,layers)
     {
-        file.write("\t<layer>\n");
+        content+=("\t<layer>\n");
         for(int ni=0,nc=layer->numberOfNuerons();ni<nc;ni++)
         {
             Neuron* neuron=layer->getNeuron(ni);
-            file.write( QString().sprintf("\t\t<neuron threshold=\"%f\">\n",neuron->getThreshold()).toAscii() );
+            content+=QString().sprintf("\t\t<neuron threshold=\"%f\">\n",neuron->getThreshold()).toAscii();
             for(int di=0,dc=neuron->numberOfDendrons();di<dc;di++)
             {
-                file.write( QString().sprintf("\t\t\t<dendron weight=\"%f\"></dendron>\n",neuron->getDendronWeight(di)).toAscii() );
+                content+=QString().sprintf("\t\t\t<dendron weight=\"%f\"></dendron>\n",neuron->getDendronWeight(di)).toAscii();
             }
-            file.write("\t\t</neuron>\n");
+            content+="\t\t</neuron>\n";
         }
-        file.write("\t</layer>\n");
+        content+="\t</layer>\n";
     }
-    file.write("</neuralNetwork>");
+    content+="</neuralNetwork>";
+    file.write(content.toUtf8());
     file.close();
 }
 
@@ -246,10 +254,6 @@ Gradient NeuralNetwork::computePartialGradient(const QVector<double>& requiredOu
 
 double NeuralNetwork::random()
 {
-    //std::cout << time(NULL) <<std::endl;
-    //srand(time(NULL) / 1000);
-    //srand((unsigned) time(NULL));
-    //srand(rand());
     int tmp = rand() % 2000;
     double result = (double) tmp;
     result /= 1000.0;
@@ -272,4 +276,12 @@ void NeuralNetwork::genarateRandomNetwork()
     }
 }
 
+QString NeuralNetwork::getNetworkString()
+{
+    return _networkString;
+}
 
+void NeuralNetwork::setNetworkString(QString str)
+{
+    _networkString=str;
+}

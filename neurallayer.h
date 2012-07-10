@@ -7,6 +7,7 @@ class NeuralLayer
 {
 public:
     NeuralLayer(NeuralNetwork* network, int numOfNeurons);
+    ~NeuralLayer();
     int numberOfNuerons() const;
     Neuron* getNeuron(int index);
 private:

@@ -11,7 +11,6 @@
 #include<QPixmap>
 #include <QDebug>
 #include <QTextCodec>
-//0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ云京冀吉宁川新晋桂沪津浙渝湘琼甘皖粤苏蒙藏豫贵赣辽鄂闽陕青鲁黑
 
 QVector<double> getImageFeature(const QImage& image)
 {
@@ -89,22 +88,22 @@ int main(int argc, char *argv[])
                 return -1;
             }
 
-            //image = normalizeImage(image);
-
             QVector<double> res = network.test(fromImageToVector(image));
             printf("Succeed Recognizing!!!\n");
-            QString alphaString = (args.contains("-s"))?args["-s"]:"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+            QString alphaString = (args.contains("-s"))?args["-s"]:network.getNetworkString();
             //double max=res[0];
             int maxI=0;
             for (int i = 0; i < res.size(); i++) {
+                QString percent;
+                percent.sprintf("%f",res[i]);
                 if(i<alphaString.length())
                 {
-                    qDebug() << alphaString[i] << " : ";
+                    qDebug() << alphaString[i] << " : " << percent;
                 }else
                 {
-                    qDebug() << "[" << i << "] : ";
+                    qDebug() << "[" << i << "] : " << percent;
                 }
-                printf("%f\n", res[i]);
                 if(res[i]>res[maxI])
                     maxI=i;
             }
@@ -188,6 +187,7 @@ int main(int argc, char *argv[])
                 return -1;
             }
             network.learn(input, output, maxK, eps, lambda, micro);
+            network.setNetworkString(alphaString);
             network.saveToXML(args["-o"]);
             std::cout << "Learnt!" << std::endl;
             qDebug()<<"The output string is:"<< alphaString;

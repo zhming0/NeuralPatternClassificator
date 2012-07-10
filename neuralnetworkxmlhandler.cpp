@@ -8,11 +8,12 @@ NeuralNetworkXmlHandler::NeuralNetworkXmlHandler(NeuralNetwork * _network)
     network=_network;
 }
 
-bool NeuralNetworkXmlHandler::startElement(const QString & uri, const QString &localName, const QString &, const QXmlAttributes &atts)
+bool NeuralNetworkXmlHandler::startElement(const QString &, const QString &localName, const QString &, const QXmlAttributes &atts)
 {
     bool ret=true;
     if("neuralNetwork"==localName)
     {
+        network->setNetworkString(atts.value("string"));
     }else if("layer"==localName)
     {
         currentLayer.clear();
