@@ -15,6 +15,7 @@ public:
     QVector<double> test(const QVector<double>&);
     int numberOfLayers() const;
     NeuralLayer* getLayer(int index) const;
+    void appendLayer(NeuralLayer*);
     void saveToXML(const QString& path);
     QString getNetworkString();
     void setNetworkString(QString);
@@ -27,7 +28,6 @@ protected:
     double random();
     double gainFunction(double value) const;
 private:
-    friend class NeuralNetworkXmlHandler;
     QVector<NeuralLayer*> layers;
     QString _networkString;
 };

@@ -91,6 +91,11 @@ NeuralLayer* NeuralNetwork::getLayer(int index) const
     return this->layers[index];
 }
 
+void NeuralNetwork::appendLayer(NeuralLayer *layer)
+{
+    layers.push_back(layer);
+}
+
 void NeuralNetwork::learn(const QVector<QVector<double> >& inputSet, const QVector<QVector<double> >& outputSet, int maxK, double eps, double lambda, double micro)
 {
     if (inputSet.size() != outputSet.size())
