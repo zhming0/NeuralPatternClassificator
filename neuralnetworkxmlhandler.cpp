@@ -45,7 +45,7 @@ bool NeuralNetworkXmlHandler::endElement(const QString &, const QString &localNa
             for (int j = 0; j < layer->getNeuron(i)->numberOfDendrons(); j++)
                 layer->getNeuron(i)->setDendronWeight(j, currentLayer[i]->getDendronWeight(j));
         }
-        network->layers.push_back(layer);
+        network->appendLayer(layer);
     }else if("neuron"==localName)
     {
         Neuron *ins=new Neuron(currentNeuron.count(),currentNeuronThreshold);
@@ -65,13 +65,13 @@ bool NeuralNetworkXmlHandler::endElement(const QString &, const QString &localNa
 }
 
 
-void NeuralNetworkXmlHandler::setDocumentLocator(QXmlLocator *locator){};
+void NeuralNetworkXmlHandler::setDocumentLocator(QXmlLocator *){}
 bool NeuralNetworkXmlHandler::startDocument(){return true;}
 bool NeuralNetworkXmlHandler::endDocument(){return true;}
-bool NeuralNetworkXmlHandler::startPrefixMapping(const QString &prefix, const QString &uri){return true;}
-bool NeuralNetworkXmlHandler::endPrefixMapping(const QString &prefix){return true;}
-bool NeuralNetworkXmlHandler::characters(const QString &ch){return true;}
-bool NeuralNetworkXmlHandler::ignorableWhitespace(const QString &ch){return true;}
-bool NeuralNetworkXmlHandler::processingInstruction(const QString &target, const QString &data){return true;}
-bool NeuralNetworkXmlHandler::skippedEntity(const QString &name){return true;}
-QString NeuralNetworkXmlHandler::errorString() const{return "";};
+bool NeuralNetworkXmlHandler::startPrefixMapping(const QString &, const QString &){return true;}
+bool NeuralNetworkXmlHandler::endPrefixMapping(const QString &){return true;}
+bool NeuralNetworkXmlHandler::characters(const QString &){return true;}
+bool NeuralNetworkXmlHandler::ignorableWhitespace(const QString &){return true;}
+bool NeuralNetworkXmlHandler::processingInstruction(const QString &, const QString &){return true;}
+bool NeuralNetworkXmlHandler::skippedEntity(const QString &){return true;}
+QString NeuralNetworkXmlHandler::errorString() const{return "";}

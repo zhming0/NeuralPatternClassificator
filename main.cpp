@@ -47,6 +47,8 @@ QImage normalizeImage(const QImage& image)
 QVector<double> fromImageToVector(const QImage& img)
 {
     QImage image = normalizeImage(img);
+    //return getImageFeature(image);
+
     QVector<double> res;
     QSize size=image.size();
     for(int x=0;x<size.width();x++)
@@ -88,6 +90,7 @@ int main(int argc, char *argv[])
 
             QVector<double> res = network.test(fromImageToVector(image));
             printf("Succeed Recognizing!!!\n");
+
             QString alphaString = (args.contains("-s"))?args["-s"]:network.getNetworkString();
             //double max=res[0];
             int maxI=0;
@@ -153,7 +156,9 @@ int main(int argc, char *argv[])
             }
             QVector<int> dim;
             dim.push_back(input[0].size());
+
             dim.push_back(30);
+
             dim.push_back(output[0].size());
             NeuralNetwork network(dim);
             bool ok=true;

@@ -13,6 +13,12 @@ NeuralLayer::NeuralLayer(NeuralNetwork* network, int numOfNeurons)
     }
 }
 
+NeuralLayer::~NeuralLayer()
+{
+    for (int i = 0; i < this->numberOfNuerons(); i++)
+        delete this->neurons[i];
+}
+
 int NeuralLayer::numberOfNuerons() const
 {
     return this->neurons.size();

@@ -22,6 +22,12 @@ NeuralNetwork::NeuralNetwork(const QString& path)
     srand((unsigned) time(NULL));
 }
 
+NeuralNetwork::~NeuralNetwork()
+{
+    for (int i = 0; i < this->numberOfLayers(); i++)
+        delete layers[i];
+}
+
 QVector<double> NeuralNetwork::test(const QVector<double> & input)
 {
     return activate(input);
@@ -83,6 +89,11 @@ NeuralLayer* NeuralNetwork::getLayer(int index) const
         return NULL;
     }
     return this->layers[index];
+}
+
+void NeuralNetwork::appendLayer(NeuralLayer *layer)
+{
+    layers.push_back(layer);
 }
 
 void NeuralNetwork::learn(const QVector<QVector<double> >& inputSet, const QVector<QVector<double> >& outputSet, int maxK, double eps, double lambda, double micro)
@@ -248,10 +259,6 @@ Gradient NeuralNetwork::computePartialGradient(const QVector<double>& requiredOu
 
 double NeuralNetwork::random()
 {
-    //std::cout << time(NULL) <<std::endl;
-    //srand(time(NULL) / 1000);
-    //srand((unsigned) time(NULL));
-    //srand(rand());
     int tmp = rand() % 2000;
     double result = (double) tmp;
     result /= 1000.0;
